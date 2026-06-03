@@ -3,8 +3,10 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Folder, Plus, Music4 } from "lucide-react";
+import { X, Folder, Plus } from "lucide-react";
 import { createPortal } from "react-dom";
+
+import { VinWordmark } from "./vin-logo";
 
 import { vinMusicNavItems } from "@/components/vin-music/navigation";
 import { useCollectionsStore } from "@/store/collections-store";
@@ -116,18 +118,8 @@ export function MobileNavDrawer({ open, onClose }: MobileNavDrawerProps) {
       >
         {/* Header */}
         <div className="flex h-14 shrink-0 items-center justify-between border-b border-border px-4">
-          <Link href="/app" className="flex items-center gap-2.5">
-            <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Music4 className="size-3.5" />
-            </span>
-            <div className="flex flex-col justify-center">
-              <span className="font-heading text-[13.5px] font-bold tracking-tight text-foreground leading-none">
-                Vin Music
-              </span>
-              <span className="text-[9px] text-muted-foreground font-semibold leading-none mt-0.5 tracking-wide">
-                Discover TikTok Sounds
-              </span>
-            </div>
+          <Link href="/app" className="flex items-center">
+            <VinWordmark iconSize={28} showTagline={true} />
           </Link>
           <button
             type="button"

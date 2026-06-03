@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MusicCard } from "@/components/vin-music/music-card";
+import { VinWordmark } from "@/components/vin-music/vin-logo";
 import { ThemeToggle } from "@/components/vin-music/theme-toggle";
 import { GlobalPlayerDock } from "@/components/vin-music/global-player-dock";
 import { CollectionPickerModal } from "@/components/vin-music/collection-picker-modal";
@@ -128,18 +129,8 @@ export default function RebuiltLandingPage() {
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex size-9 items-center justify-center rounded-lg bg-foreground text-background">
-              <Music2 className="size-5" />
-            </div>
-            <div>
-              <p className="text-sm font-bold tracking-widest uppercase text-foreground leading-none">
-                Vin Music
-              </p>
-              <p className="text-[10px] text-muted-foreground mt-0.5 select-none font-medium">
-                TikTok Sound discovery
-              </p>
-            </div>
+          <Link href="/" className="flex items-center">
+            <VinWordmark iconSize={36} showTagline={true} />
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
@@ -928,14 +919,9 @@ export default function RebuiltLandingPage() {
       <footer className="border-t border-border/40 bg-card/20 py-12 relative z-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2 max-w-md">
-            <div className="flex items-center gap-2">
-              <div className="flex size-7 items-center justify-center rounded bg-foreground text-background">
-                <Music2 className="size-4" />
-              </div>
-              <p className="text-xs font-bold tracking-widest uppercase text-foreground">
-                Vin Music
-              </p>
-            </div>
+            <Link href="/" className="flex items-center">
+              <VinWordmark iconSize={28} showTagline={false} />
+            </Link>
             <p className="text-[11px] leading-relaxed text-muted-foreground">
               A premium discoverability portal for internet sound culture. Catalog sounds, bypass the chaos.
             </p>

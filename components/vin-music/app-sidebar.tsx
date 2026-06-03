@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   ChevronLeft,
-  Music4,
   Folder,
   Play,
   Pause,
   User,
   FolderPlus
 } from "lucide-react";
+
+import { VinIcon, VinWordmark } from "./vin-logo";
 
 import { Button } from "@/components/ui/button";
 import { CoverImage } from "@/components/vin-music/track-cover";
@@ -70,19 +71,11 @@ export function AppSidebar({
     >
       {/* Branding Header */}
       <div className={cn("flex h-12 items-center justify-between px-3 select-none relative", collapsed && "justify-center")}>
-        <Link href="/app" className="flex items-center gap-2 min-w-0">
-          <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Music4 className="size-3.5" />
-          </span>
-          {!collapsed && (
-            <div className="min-w-0 flex flex-col justify-center ml-1">
-              <span className="font-heading text-[13.5px] font-bold tracking-tight text-foreground leading-none">
-                Vin Music
-              </span>
-              <span className="text-[9px] text-muted-foreground font-semibold leading-none mt-0.5 tracking-wide">
-                Discover TikTok Sounds
-              </span>
-            </div>
+        <Link href="/app" className="flex items-center min-w-0">
+          {collapsed ? (
+            <VinIcon size={28} />
+          ) : (
+            <VinWordmark iconSize={28} showTagline={true} />
           )}
         </Link>
         {collapsed ? (

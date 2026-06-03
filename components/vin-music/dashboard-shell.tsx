@@ -32,7 +32,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="container mx-auto flex min-h-screen">
+      <div className="flex min-h-screen">
         {/* Desktop sidebar — only xl+ */}
         <AppSidebar
           collapsed={sidebarCollapsed}
