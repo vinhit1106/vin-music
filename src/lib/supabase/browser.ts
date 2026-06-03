@@ -7,6 +7,11 @@ let browserClient: SupabaseClient | null = null;
 
 function getEnv(value: string | undefined, name: string): string {
   if (!value) {
+    if (typeof window === "undefined") {
+      return name === "NEXT_PUBLIC_SUPABASE_URL"
+        ? "https://placeholder-project.supabase.co"
+        : "placeholder-anon-key";
+    }
     throw new Error(`Missing environment variable: ${name}`);
   }
   return value;
