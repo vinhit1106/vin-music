@@ -421,14 +421,16 @@ export function useTrackMetadata(
  * @param keyword  Cache namespace key (default: "trending")
  * @param page     Page offset 0–4; each page fetches a different cursor window
  *                 from TikWM, giving genuinely different sounds on each page.
+ * @param refresh  Manual refresh token; bypasses the server cache when non-zero.
  */
-export function useExploreTracks(keyword = "trending", page = 0) {
+export function useExploreTracks(keyword = "trending", page = 0, refresh = 0) {
   return useQuery({
-    queryKey: queryKeys.explore(keyword, page),
+    queryKey: queryKeys.explore(keyword, page, refresh),
     queryFn: async () => {
       const page_ = Math.max(0, Math.min(page, 4));
+      const refreshParam = refresh ? `&refresh=${refresh}` : "";
       const data = await apiFetchJson<TrendingSoundsPage>(
-        `/api/music/trending?count=12&page=${page_}`,
+        `/api/music/trending?count=12&page=${page_}${refreshParam}`,
         { method: "GET" },
       );
 
@@ -456,7 +458,7 @@ export function useExploreTracks(keyword = "trending", page = 0) {
         generatedAt: data.generatedAt,
       };
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes — matches TikWM server cache per page
+    staleTime: refresh ? 0 : 5 * 60 * 1000, // Manual refreshes are intentionally one-shot.
   });
 }
 

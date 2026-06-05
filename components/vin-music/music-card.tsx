@@ -34,6 +34,8 @@ type MusicCardProps = {
   music: MusicCardModel;
   compact?: boolean; // Maintained for signature compatibility
   onOpenDetails?: (music: MusicCardModel) => void;
+  playContext?: MusicCardModel[];
+  queueContextOnAutoplay?: boolean;
 };
 
 function PlayingEqualizer({
@@ -59,12 +61,19 @@ function PlayingEqualizer({
   );
 }
 
-export function MusicCard({ music, onOpenDetails }: MusicCardProps) {
+export function MusicCard({
+  music,
+  onOpenDetails,
+  playContext,
+  queueContextOnAutoplay = false,
+}: MusicCardProps) {
   const playTrack = useVinMusicPlayerStore((state) => state.playTrack);
   const playNextTrack = useVinMusicPlayerStore((state) => state.playNextTrack);
   const addToQueue = useVinMusicPlayerStore((state) => state.addToQueue);
+  const setQueue = useVinMusicPlayerStore((state) => state.setQueue);
   const currentTrack = useVinMusicPlayerStore((state) => state.currentTrack);
   const isPlaying = useVinMusicPlayerStore((state) => state.isPlaying);
+  const playbackMode = useVinMusicPlayerStore((state) => state.playbackMode);
   const togglePlayback = useVinMusicPlayerStore(
     (state) => state.togglePlayback,
   );
@@ -87,7 +96,17 @@ export function MusicCard({ music, onOpenDetails }: MusicCardProps) {
     if (isCurrent) {
       togglePlayback();
     } else {
-      playTrack(music);
+      const playlist = playContext?.length ? playContext : undefined;
+      playTrack(music, playlist);
+
+      if (
+        queueContextOnAutoplay &&
+        playbackMode === "autoplay-next" &&
+        playlist?.length
+      ) {
+        const currentIndex = playlist.findIndex((track) => track.id === music.id);
+        setQueue(currentIndex >= 0 ? playlist.slice(currentIndex + 1) : []);
+      }
     }
   };
 

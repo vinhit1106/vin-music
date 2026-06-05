@@ -210,11 +210,19 @@ export async function getTrendingSounds(args: {
   count?: number;
   /** Page offset (0–4). Each page fetches a different cursor window from TikWM. */
   page?: number;
+  /** Bypass the 5-minute server cache for explicit user refreshes. */
+  fresh?: boolean;
 }): Promise<TrendingSoundsPage> {
-  return cachedGetTrendingSounds({
+  const query = {
     region: args.region ?? "VN",
     count: Math.min(args.count ?? 12, 30),
     // Clamp to 0–4 to prevent unbounded cursor growth
     page: Math.max(0, Math.min(args.page ?? 0, 4)),
-  });
+  };
+
+  if (args.fresh) {
+    return aggregateTrendingSounds(query);
+  }
+
+  return cachedGetTrendingSounds(query);
 }

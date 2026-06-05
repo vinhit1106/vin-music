@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Bookmark, Clapperboard, Pause, Play, RefreshCw } from "lucide-react";
 
@@ -25,18 +25,16 @@ import { useAuthContext } from "@/src/lib/auth/hooks";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
-// Freshness label: derives "Updated X min ago" from generatedAt timestamp.
-// No timer or polling — computed once when data arrives.
+// Freshness label: derives a deterministic update time from generatedAt.
+// No timer or polling; computed once when data arrives.
 // ---------------------------------------------------------------------------
 function useFreshnessLabel(generatedAt: string | undefined): string | null {
   return useMemo(() => {
     if (!generatedAt) return null;
-    const diff = Math.floor(
-      (Date.now() - new Date(generatedAt).getTime()) / 60_000,
-    );
-    if (diff < 1) return "Updated just now";
-    if (diff === 1) return "Updated 1 min ago";
-    return `Updated ${diff} min ago`;
+    return `Updated ${new Date(generatedAt).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
   }, [generatedAt]);
 }
 
@@ -57,7 +55,14 @@ export default function VinMusicHomePage() {
 
   // --- Explore state ---
   const [explorePage, setExplorePage] = useState(0);
-  const exploreQuery = useExploreTracks("trending", explorePage);
+  const [exploreRefresh, setExploreRefresh] = useState(0);
+  const pendingExploreQueueRefreshRef = useRef(0);
+  const lastAutoRefreshTrackRef = useRef<string | null>(null);
+  const exploreQuery = useExploreTracks(
+    "trending",
+    explorePage,
+    exploreRefresh,
+  );
 
   // --- Other data ---
   // Fetch more than 4 so deduplication still yields 4 unique tracks
@@ -82,9 +87,10 @@ export default function VinMusicHomePage() {
   const freshnessLabel = useFreshnessLabel(exploreQuery.data?.generatedAt);
 
   // --- Discover More handler ---
-  // Picks a random page != current so results always feel fresh.
+  // Picks a random page != current and bypasses the server cache for fresh data.
   function handleDiscoverMore() {
     setExplorePage((current) => pickNextPage(current));
+    setExploreRefresh(Date.now());
   }
 
   // --- Recently played (deduplicated) ---
@@ -110,10 +116,69 @@ export default function VinMusicHomePage() {
 
   const currentTrack = useVinMusicPlayerStore((state) => state.currentTrack);
   const isPlaying = useVinMusicPlayerStore((state) => state.isPlaying);
+  const playbackMode = useVinMusicPlayerStore((state) => state.playbackMode);
   const playTrack = useVinMusicPlayerStore((state) => state.playTrack);
+  const setQueue = useVinMusicPlayerStore((state) => state.setQueue);
   const togglePlayback = useVinMusicPlayerStore(
     (state) => state.togglePlayback,
   );
+
+  useEffect(() => {
+    if (playbackMode !== "autoplay-next") return;
+    if (!currentTrack || !exploreTracks.length) return;
+    if (exploreQuery.isFetching) return;
+
+    const lastExploreTrack = exploreTracks.at(-1);
+    if (!lastExploreTrack || currentTrack.id !== lastExploreTrack.id) return;
+    if (lastAutoRefreshTrackRef.current === currentTrack.id) return;
+
+    const refreshToken = Date.now();
+    lastAutoRefreshTrackRef.current = currentTrack.id;
+    pendingExploreQueueRefreshRef.current = refreshToken;
+    setExplorePage((current) => pickNextPage(current));
+    setExploreRefresh(refreshToken);
+  }, [currentTrack, exploreQuery.isFetching, exploreTracks, playbackMode]);
+
+  useEffect(() => {
+    if (!pendingExploreQueueRefreshRef.current) return;
+    if (pendingExploreQueueRefreshRef.current !== exploreRefresh) return;
+    if (exploreQuery.isFetching || exploreQuery.isLoading) return;
+
+    pendingExploreQueueRefreshRef.current = 0;
+
+    if (exploreQuery.isError || !exploreTracks.length) return;
+
+    const nextTracks = exploreTracks.filter(
+      (track) => track.id !== currentTrack?.id,
+    );
+    const [nextTrack, ...remainingTracks] = nextTracks;
+
+    if (
+      playbackMode === "autoplay-next" &&
+      currentTrack &&
+      !isPlaying &&
+      lastAutoRefreshTrackRef.current === currentTrack.id &&
+      nextTrack
+    ) {
+      playTrack(nextTrack, nextTracks);
+      setQueue(remainingTracks);
+      return;
+    }
+
+    setQueue(nextTracks);
+  }, [
+    currentTrack?.id,
+    currentTrack,
+    exploreQuery.isError,
+    exploreQuery.isFetching,
+    exploreQuery.isLoading,
+    exploreRefresh,
+    exploreTracks,
+    isPlaying,
+    playbackMode,
+    playTrack,
+    setQueue,
+  ]);
 
   return (
     <PageTransition>
@@ -375,7 +440,12 @@ export default function VinMusicHomePage() {
                   )}
                 >
                   {exploreTracks.map((music) => (
-                    <MusicCard key={music.id} music={music} />
+                    <MusicCard
+                      key={music.id}
+                      music={music}
+                      playContext={exploreTracks}
+                      queueContextOnAutoplay
+                    />
                   ))}
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold text-muted-foreground">

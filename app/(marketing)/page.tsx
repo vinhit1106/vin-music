@@ -49,17 +49,15 @@ import { trackToMusicCard } from "@/src/lib/query/mappers";
 import { formatCount } from "@/lib/vin-music/format";
 
 // ---------------------------------------------------------------------------
-// Freshness label: derives "Updated X min ago" from generatedAt timestamp.
+// Freshness label: derives a deterministic update time from generatedAt.
 // ---------------------------------------------------------------------------
 function useFreshnessLabel(generatedAt: string | undefined): string | null {
   return useMemo(() => {
     if (!generatedAt) return null;
-    const diff = Math.floor(
-      (Date.now() - new Date(generatedAt).getTime()) / 60_000,
-    );
-    if (diff < 1) return "Updated just now";
-    if (diff === 1) return "Updated 1 min ago";
-    return `Updated ${diff} min ago`;
+    return `Updated ${new Date(generatedAt).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
   }, [generatedAt]);
 }
 

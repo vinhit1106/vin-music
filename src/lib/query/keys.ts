@@ -4,7 +4,7 @@ export const queryKeys = {
   playlists: ["api", "playlists"] as const,
   playlist: (id: string) => ["api", "playlists", id] as const,
   history: (limit?: number) => ["api", "history", limit ?? 50] as const,
-  explore: (keyword: string, page?: number) => ["api", "explore", keyword, page ?? 0] as const,
+  explore: (keyword: string, page?: number, refresh?: number) => ["api", "explore", keyword, page ?? 0, refresh ?? 0] as const,
   trackDetail: (id: string) => ["api", "track", id] as const,
   /** Sound context: metadata for a specific music ID */
   soundContext: (id: string) => ["api", "sound-context", id] as const,

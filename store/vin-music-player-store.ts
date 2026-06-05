@@ -32,6 +32,7 @@ type PlayerState = {
   playTrack: (track: MusicCardModel, playlist?: MusicCardModel[]) => void;
   playNextTrack: (track: MusicCardModel) => void;
   addToQueue: (track: MusicCardModel) => void;
+  setQueue: (tracks: MusicCardModel[]) => void;
   removeFromQueue: (trackId: string) => void;
   clearQueue: () => void;
   moveQueueItem: (trackId: string, direction: "up" | "down") => void;
@@ -96,6 +97,16 @@ export const useVinMusicPlayerStore = create<PlayerState>()(
           return { queue: [...state.queue, track].slice(0, 100) };
         }),
 
+      setQueue: (tracks) =>
+        set({
+          queue: tracks
+            .filter((track, index, list) =>
+              Boolean(track?.id) &&
+              list.findIndex((item) => item.id === track.id) === index,
+            )
+            .slice(0, 100),
+        }),
+
       removeFromQueue: (trackId) =>
         set((state) => ({
           queue: state.queue.filter((item) => item.id !== trackId),
@@ -136,6 +147,11 @@ export const useVinMusicPlayerStore = create<PlayerState>()(
         }
 
         const idx = playlist.findIndex((t) => t.id === currentTrack.id);
+        if (playbackMode === "autoplay-next" && idx >= playlist.length - 1) {
+          set({ isPlaying: false, currentTime: 0 });
+          return;
+        }
+
         const nextIdx = (idx + 1) % playlist.length;
         get().playTrack(playlist[nextIdx]!, playlist);
       },
