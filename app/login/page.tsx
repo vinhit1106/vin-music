@@ -97,7 +97,7 @@ function LoginPageContent() {
         </div>
         <div className="text-center space-y-1">
           <h1 className="font-heading text-[15px] font-bold tracking-widest uppercase">
-            Vin Music
+            VinVibe
           </h1>
           <p className="text-[11px] text-muted-foreground animate-pulse font-semibold">
             Loading...
@@ -128,7 +128,7 @@ function LoginPageContent() {
             {/* Mock top bar */}
             <div className="h-12 border-b border-border bg-card/45 px-5 flex items-center justify-between">
               <span className="text-[11px] font-bold text-muted-foreground tracking-wide">
-                Vin Music Preview
+                VinVibe Preview
               </span>
               <div className="h-7 w-7 rounded-full bg-muted border border-border/40" />
             </div>
@@ -205,7 +205,7 @@ function LoginPageContent() {
             <Music2 className="size-5" />
           </div>
           <h1 className="font-heading text-xl font-bold tracking-tight">
-            Vin Music
+            VinVibe
           </h1>
           <p className="text-[10px] font-bold tracking-widest uppercase text-primary">
             Build Your TikTok Sound Library

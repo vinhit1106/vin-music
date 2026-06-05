@@ -10,7 +10,7 @@ export default function SettingsPage() {
       <div className="space-y-6">
         <SectionHeading
           title="Settings"
-          subtitle="Personalize notifications and workspace defaults for Vin Music."
+          subtitle="Personalize notifications and workspace defaults for VinVibe."
         />
 
         <div className="grid gap-4 md:grid-cols-2">

@@ -8,7 +8,7 @@ export function logClientError(
 ): void {
   if (process.env.NODE_ENV !== "production") {
     console.error(
-      `[Vin Music${context?.boundary ? `:${context.boundary}` : ""}]`,
+      `[VinVibe${context?.boundary ? `:${context.boundary}` : ""}]`,
       error,
       context?.digest ? { digest: context.digest } : undefined,
     );

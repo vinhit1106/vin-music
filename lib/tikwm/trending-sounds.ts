@@ -39,6 +39,7 @@ export interface TrendingSound {
 export interface TrendingSoundsPage {
   sounds: TrendingSound[];
   region: string;
+  page: number;
   generatedAt: string;
 }
 
@@ -189,6 +190,7 @@ async function aggregateTrendingSounds(args: {
   return {
     sounds,
     region: args.region,
+    page: args.page,
     generatedAt: new Date().toISOString(),
   };
 }
@@ -208,7 +210,7 @@ const cachedGetTrendingSounds = unstable_cache(
 export async function getTrendingSounds(args: {
   region?: string;
   count?: number;
-  /** Page offset (0–4). Each page fetches a different cursor window from TikWM. */
+  /** Page offset (0–4). Omit to let the API pick a random cursor window. */
   page?: number;
   /** Bypass the 5-minute server cache for explicit user refreshes. */
   fresh?: boolean;
@@ -217,7 +219,10 @@ export async function getTrendingSounds(args: {
     region: args.region ?? "VN",
     count: Math.min(args.count ?? 12, 30),
     // Clamp to 0–4 to prevent unbounded cursor growth
-    page: Math.max(0, Math.min(args.page ?? 0, 4)),
+    page:
+      args.page === undefined
+        ? Math.floor(Math.random() * 5)
+        : Math.max(0, Math.min(args.page, 4)),
   };
 
   if (args.fresh) {

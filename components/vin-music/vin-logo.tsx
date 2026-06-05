@@ -104,7 +104,7 @@ export function VinIcon({
 
   return (
     <span
-      aria-label="Vin Music"
+      aria-label="VinVibe"
       role="img"
       className={cn(
         "inline-flex shrink-0 select-none items-center justify-center rounded-[22%] bg-primary text-primary-foreground",
@@ -119,7 +119,7 @@ export function VinIcon({
 
 // ---------------------------------------------------------------------------
 // VinWordmark — Full navbar / sidebar lockup.
-// VinIcon + "Vin Music" text + optional tagline.
+// VinIcon + "VinVibe" text + optional tagline.
 // ---------------------------------------------------------------------------
 export function VinWordmark({
   iconSize = 28,
@@ -135,7 +135,7 @@ export function VinWordmark({
       <VinIcon size={iconSize} />
       <span className="flex flex-col justify-center">
         <span className="font-heading text-[13.5px] font-bold leading-none tracking-tight text-foreground">
-          Vin Music
+          VinVibe
         </span>
         {showTagline && (
           <span className="mt-0.5 text-[9px] font-semibold leading-none tracking-wide text-muted-foreground">

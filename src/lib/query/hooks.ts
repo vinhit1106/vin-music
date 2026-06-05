@@ -419,18 +419,24 @@ export function useTrackMetadata(
  * region so the home page always has real content.
  *
  * @param keyword  Cache namespace key (default: "trending")
- * @param page     Page offset 0–4; each page fetches a different cursor window
- *                 from TikWM, giving genuinely different sounds on each page.
+ * @param page     Page offset 0–4; omit for a random initial cursor window.
  * @param refresh  Manual refresh token; bypasses the server cache when non-zero.
+ * @param accessKey Cache key segment for random initial loads.
  */
-export function useExploreTracks(keyword = "trending", page = 0, refresh = 0) {
+export function useExploreTracks(
+  keyword = "trending",
+  page?: number,
+  refresh = 0,
+  accessKey = "",
+) {
   return useQuery({
-    queryKey: queryKeys.explore(keyword, page, refresh),
+    queryKey: queryKeys.explore(keyword, page, refresh, accessKey),
     queryFn: async () => {
-      const page_ = Math.max(0, Math.min(page, 4));
+      const pageParam =
+        page === undefined ? "" : `&page=${Math.max(0, Math.min(page, 4))}`;
       const refreshParam = refresh ? `&refresh=${refresh}` : "";
       const data = await apiFetchJson<TrendingSoundsPage>(
-        `/api/music/trending?count=12&page=${page_}${refreshParam}`,
+        `/api/music/trending?count=12${pageParam}${refreshParam}`,
         { method: "GET" },
       );
 
@@ -455,6 +461,7 @@ export function useExploreTracks(keyword = "trending", page = 0, refresh = 0) {
           },
         })) satisfies TrackSnapshot[],
         region: data.region,
+        page: data.page,
         generatedAt: data.generatedAt,
       };
     },

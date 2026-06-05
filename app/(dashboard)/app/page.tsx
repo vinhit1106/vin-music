@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Bookmark, Clapperboard, Pause, Play, RefreshCw } from "lucide-react";
 
@@ -44,17 +44,18 @@ function useFreshnessLabel(generatedAt: string | undefined): string | null {
 // ---------------------------------------------------------------------------
 const EXPLORE_PAGES = [0, 1, 2, 3, 4] as const;
 
-function pickNextPage(current: number): number {
+function pickNextPage(current: number | undefined): number {
   const candidates = EXPLORE_PAGES.filter((p) => p !== current);
   return candidates[Math.floor(Math.random() * candidates.length)]!;
 }
 
-export default function VinMusicHomePage() {
+export default function VinVibeHomePage() {
   const { user, isLoading: isSessionLoading } = useAuthContext();
   const isReady = Boolean(user) && !isSessionLoading;
+  const exploreAccessKey = useId();
 
   // --- Explore state ---
-  const [explorePage, setExplorePage] = useState(0);
+  const [explorePage, setExplorePage] = useState<number | undefined>(undefined);
   const [exploreRefresh, setExploreRefresh] = useState(0);
   const pendingExploreQueueRefreshRef = useRef(0);
   const lastAutoRefreshTrackRef = useRef<string | null>(null);
@@ -62,6 +63,7 @@ export default function VinMusicHomePage() {
     "trending",
     explorePage,
     exploreRefresh,
+    exploreAccessKey,
   );
 
   // --- Other data ---
@@ -85,6 +87,7 @@ export default function VinMusicHomePage() {
   );
 
   const freshnessLabel = useFreshnessLabel(exploreQuery.data?.generatedAt);
+  const displayedExplorePage = exploreQuery.data?.page ?? explorePage;
 
   // --- Discover More handler ---
   // Picks a random page != current and bypasses the server cache for fresh data.
@@ -357,7 +360,7 @@ export default function VinMusicHomePage() {
           ) : (
             <EmptyState
               title="Nothing in your listening history yet"
-              description="Start playing a track and Vin Music will keep your history here."
+              description="Start playing a track and VinVibe will keep your history here."
             />
           )}
         </section>
@@ -458,7 +461,9 @@ export default function VinMusicHomePage() {
                     </span>
                   ) : null}
                   <span className="rounded-md border border-border/70 px-2 py-1 tabular-nums">
-                    Page {explorePage + 1} of {EXPLORE_PAGES.length}
+                    {displayedExplorePage === undefined
+                      ? "Random batch"
+                      : `Page ${displayedExplorePage + 1} of ${EXPLORE_PAGES.length}`}
                   </span>
                 </div>
               </div>

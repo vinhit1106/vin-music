@@ -27,7 +27,7 @@ export default function GlobalError({
             Something went wrong
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Vin Music ran into an unexpected error. Try again or go back to the
+            VinVibe ran into an unexpected error. Try again or go back to the
             app home.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">

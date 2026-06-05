@@ -1,6 +1,6 @@
 import { DashboardShell } from "@/components/vin-music/dashboard-shell";
 
-export default function VinMusicLayout({
+export default function VinVibeLayout({
   children,
 }: {
   children: React.ReactNode;

@@ -206,7 +206,7 @@ export default function RebuiltLandingPage() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base md:text-lg leading-relaxed text-muted-foreground">
-            Vin Music is a lightweight, product-first discovery and organization tool built specifically for TikTok sound culture. Preview tracks instantly and catalog them into custom collections.
+            VinVibe is a lightweight, product-first discovery and organization tool built specifically for TikTok sound culture. Preview tracks instantly and catalog them into custom collections.
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -241,7 +241,7 @@ export default function RebuiltLandingPage() {
                 <span className="size-3 rounded-full bg-green-500/80" />
               </div>
               <div className="text-[11px] font-semibold text-muted-foreground tracking-wider select-none font-mono">
-                vin-music-dashboard.app
+                vinvibe-dashboard.app
               </div>
               <div className="w-12" /> {/* Spacer */}
             </div>
@@ -307,7 +307,7 @@ export default function RebuiltLandingPage() {
                 <div className="space-y-4">
                   <div className="space-y-1">
                     <h2 className="text-base md:text-xl font-bold tracking-tight font-heading">
-                      Welcome to Vin Music
+                      Welcome to VinVibe
                     </h2>
                     <p className="text-xs text-muted-foreground max-w-md">
                       Extract audio from TikTok links and organize them into curated collections.
@@ -786,7 +786,7 @@ export default function RebuiltLandingPage() {
               Everything you need to catalog sound culture
             </h2>
             <p className="text-sm text-muted-foreground">
-              Vin Music implements core library utilities to aggregate and save TikTok sounds without unnecessary bloat.
+              VinVibe implements core library utilities to aggregate and save TikTok sounds without unnecessary bloat.
             </p>
           </div>
 
@@ -849,7 +849,7 @@ export default function RebuiltLandingPage() {
           </div>
         </section>
 
-        {/* WHY VIN MUSIC */}
+        {/* WHY VINVIBE */}
         <section className="py-16 md:py-24 border-t border-border/40">
           <div className="grid gap-8 md:grid-cols-[1fr_1.5fr] items-start">
             <div className="space-y-4">
@@ -866,7 +866,7 @@ export default function RebuiltLandingPage() {
               {[
                 {
                   title: "Not a Streaming Service",
-                  desc: "We do not replicate Spotify or Apple Music. Vin Music is purely a workflow tool to capture, inspect, and organize sound bytes.",
+                  desc: "We do not replicate Spotify or Apple Music. VinVibe is purely a workflow tool to capture, inspect, and organize sound bytes.",
                 },
                 {
                   title: "Lightning-Fast Auditioning",
