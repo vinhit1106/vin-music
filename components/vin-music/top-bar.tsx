@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Loader2, LogOut, Menu, Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -16,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthContext } from "@/src/lib/auth/hooks";
-import { cn } from "@/lib/utils";
 
 export function TopBar({ onMobileNavOpen }: { onMobileNavOpen?: () => void }) {
   const searchParams = useSearchParams();
@@ -57,7 +55,7 @@ function TopBarInner({
   };
 
   return (
-    <header className="sticky top-0 z-35 flex h-12 items-center border-b border-border bg-card/85 px-3 backdrop-blur-sm md:px-5">
+    <header className="fixed inset-x-0 top-0 z-35 flex h-12 items-center border-b border-border bg-card/85 px-3 backdrop-blur-sm md:px-5 xl:sticky xl:inset-x-auto">
       <div className="flex min-w-0 w-full items-center justify-between gap-2 sm:gap-4">
 
         {/* Left: Mobile hamburger — only visible below xl where desktop sidebar is hidden */}

@@ -68,7 +68,7 @@ export function AppSidebar({
     <motion.aside
       animate={{ width: collapsed ? 64 : 220 }}
       transition={{ duration: 0.22, ease: "easeOut" }}
-      className="hidden border-r border-border bg-card/45 xl:flex xl:flex-col h-screen sticky top-0"
+      className="fixed inset-y-0 left-0 z-40 hidden h-screen border-r border-border bg-card/45 xl:flex xl:flex-col"
     >
       {/* Branding Header */}
       <div className={cn("flex h-12 items-center justify-between px-3 select-none relative", collapsed && "justify-center")}>

@@ -72,11 +72,12 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <div
             className={cn(
               "flex min-h-screen min-w-0 flex-1 flex-col transition-[padding] duration-200",
+              sidebarCollapsed ? "xl:pl-16" : "xl:pl-[220px]",
               mainBottomPadding,
             )}
           >
             <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
-            <main className="min-w-0 flex-1 overflow-x-clip px-3 py-4 md:px-5 md:py-5">
+            <main className="min-w-0 flex-1 overflow-x-clip px-3 pb-4 pt-16 md:px-5 md:pb-5 md:pt-16 xl:py-5">
               <div className="mx-auto w-full max-w-[1280px] min-w-0">{children}</div>
             </main>
           </div>
