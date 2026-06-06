@@ -6,6 +6,7 @@ export function trackToMusicCard(track: Track): MusicCardModel {
   return {
     id: track.id,
     title: track.title,
+    friendlyName: track.friendlyName ?? null,
     author: track.artist,
     duration: track.duration,
     album: "Single",
@@ -27,6 +28,7 @@ export function musicCardToTrackSnapshot(music: MusicCardModel): Track {
   return {
     id: music.id,
     title: music.title,
+    friendlyName: music.friendlyName ?? null,
     artist: music.author,
     audioUrl: music.play,
     coverUrl: music.cover || undefined,

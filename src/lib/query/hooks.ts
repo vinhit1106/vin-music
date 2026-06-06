@@ -16,6 +16,7 @@ import { apiFetchJson } from "@/src/lib/query/client";
 import { queryKeys } from "@/src/lib/query/keys";
 import { trackToMusicCard } from "@/src/lib/query/mappers";
 import type { MusicCardModel } from "@/lib/vin-music/types";
+import { useVinMusicPlayerStore } from "@/store/vin-music-player-store";
 import type { SoundVideo, ImportResult } from "@/src/lib/tikwm/sound-entity";
 import type { TrendingSoundsPage } from "@/lib/tikwm/trending-sounds";
 
@@ -170,6 +171,55 @@ export function useToggleFavorite() {
       toast.success(
         args.isFavorited ? "Removed from favorites." : "Saved to favorites.",
       );
+    },
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.favorites });
+    },
+  });
+}
+
+export function useUpdateFavoriteTrackName() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (args: { trackId: string; friendlyName: string | null }) =>
+      apiFetchJson<FavoriteRow>(`/api/favorites/${args.trackId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ friendlyName: args.friendlyName }),
+      }),
+    onMutate: async (args) => {
+      await qc.cancelQueries({ queryKey: queryKeys.favorites });
+      const previous = qc.getQueryData<FavoriteRow[]>(queryKeys.favorites);
+      qc.setQueryData<FavoriteRow[]>(queryKeys.favorites, (prev) =>
+        prev?.map((row) =>
+          row.track_id === args.trackId
+            ? {
+                ...row,
+                track_data: {
+                  ...row.track_data,
+                  friendlyName: args.friendlyName,
+                },
+              }
+            : row,
+        ),
+      );
+      return { previous };
+    },
+    onError: (_err, _args, ctx) => {
+      if (ctx?.previous) qc.setQueryData(queryKeys.favorites, ctx.previous);
+      toast.error("Failed to update sound name.");
+    },
+    onSuccess: (_data, args) => {
+      toast.success("Sound name updated.");
+      const currentTrack = useVinMusicPlayerStore.getState().currentTrack;
+      if (currentTrack?.id === args.trackId) {
+        useVinMusicPlayerStore.setState({
+          currentTrack: {
+            ...currentTrack,
+            friendlyName: args.friendlyName,
+          },
+        });
+      }
     },
     onSettled: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.favorites });
@@ -369,6 +419,73 @@ export function useRemoveTrackFromPlaylist() {
         queryKey: queryKeys.playlist(args.playlistId),
       });
       void qc.invalidateQueries({ queryKey: queryKeys.playlists });
+      void qc.invalidateQueries({ queryKey: ["api", "playlist-details"] });
+    },
+  });
+}
+
+export function useUpdatePlaylistTrackName() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (args: {
+      playlistId: string;
+      trackId: string;
+      friendlyName: string | null;
+    }) =>
+      apiFetchJson<PlaylistTrackRow>(
+        `/api/playlists/${args.playlistId}/tracks/${args.trackId}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({ friendlyName: args.friendlyName }),
+        },
+      ),
+    onMutate: async (args) => {
+      await qc.cancelQueries({ queryKey: queryKeys.playlist(args.playlistId) });
+      const previous = qc.getQueryData<PlaylistDetail>(
+        queryKeys.playlist(args.playlistId),
+      );
+      qc.setQueryData<PlaylistDetail>(
+        queryKeys.playlist(args.playlistId),
+        (prev) =>
+          prev
+            ? {
+                ...prev,
+                tracks: prev.tracks.map((row) =>
+                  row.track_id === args.trackId
+                    ? {
+                        ...row,
+                        track_data: {
+                          ...row.track_data,
+                          friendlyName: args.friendlyName,
+                        },
+                      }
+                    : row,
+                ),
+              }
+            : prev,
+      );
+      return { previous };
+    },
+    onError: (_err, args, ctx) => {
+      if (ctx?.previous)
+        qc.setQueryData(queryKeys.playlist(args.playlistId), ctx.previous);
+      toast.error("Failed to update sound name.");
+    },
+    onSuccess: (_data, args) => {
+      toast.success("Sound name updated.");
+      const currentTrack = useVinMusicPlayerStore.getState().currentTrack;
+      if (currentTrack?.id === args.trackId) {
+        useVinMusicPlayerStore.setState({
+          currentTrack: {
+            ...currentTrack,
+            friendlyName: args.friendlyName,
+          },
+        });
+      }
+    },
+    onSettled: (_data, _err, args) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.playlist(args.playlistId) });
       void qc.invalidateQueries({ queryKey: ["api", "playlist-details"] });
     },
   });

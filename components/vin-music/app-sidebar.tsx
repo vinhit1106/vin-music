@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { vinMusicNavItems } from "@/components/vin-music/navigation";
 import { useCollectionsStore } from "@/store/collections-store";
 import { useVinMusicPlayerStore } from "@/store/vin-music-player-store";
+import { getTrackDisplayTitle } from "@/lib/vin-music/display";
 import { useAuthContext } from "@/src/lib/auth/hooks";
 import { usePlaylistDetails, usePlaylists } from "@/src/lib/query/hooks";
 
@@ -289,7 +290,7 @@ export function AppSidebar({
               {currentTrack.cover?.trim() ? (
                 <CoverImage
                   src={currentTrack.cover}
-                  alt={currentTrack.title}
+                  alt={getTrackDisplayTitle(currentTrack)}
                   containerClassName="h-8 w-8 shrink-0 rounded-md border border-border/40"
                   sizes="32px"
                 />
@@ -299,7 +300,7 @@ export function AppSidebar({
               {!collapsed && (
                 <div className="min-w-0 flex-1">
                   <p className="text-[11.5px] font-bold text-foreground truncate leading-tight">
-                    {currentTrack.title}
+                    {getTrackDisplayTitle(currentTrack)}
                   </p>
                   <p className="text-[9.5px] text-muted-foreground truncate leading-none mt-0.5 font-medium">
                     {currentTrack.author}

@@ -225,6 +225,8 @@ function SearchPageInner({ initialQuery }: { initialQuery: string }) {
                   <MusicCard
                     key={music.id}
                     music={music}
+                    playContext={cards}
+                    queueContextOnAutoplay
                     onOpenDetails={(track) => {
                       setDetailTrack(track);
                       setIsDetailOpen(true);

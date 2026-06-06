@@ -13,3 +13,8 @@ export const favoriteTrackParamsSchema = z
   })
   .strict();
 
+export const favoriteUpdateBodySchema = z
+  .object({
+    friendlyName: z.string().trim().max(160).nullable(),
+  })
+  .strict();

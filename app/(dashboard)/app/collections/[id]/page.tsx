@@ -25,9 +25,12 @@ import {
   useFavorites,
   usePlaylist,
   useRemoveTrackFromPlaylist,
+  useToggleFavorite,
   useUpdatePlaylist,
+  useUpdateFavoriteTrackName,
+  useUpdatePlaylistTrackName,
 } from "@/src/lib/query/hooks";
-import { trackToMusicCard } from "@/src/lib/query/mappers";
+import { musicCardToTrackSnapshot, trackToMusicCard } from "@/src/lib/query/mappers";
 import { useAuthContext } from "@/src/lib/auth/hooks";
 
 export default function CollectionDetailPage() {
@@ -47,6 +50,9 @@ export default function CollectionDetailPage() {
   const updatePlaylist = useUpdatePlaylist();
   const deletePlaylist = useDeletePlaylist();
   const removeTrack = useRemoveTrackFromPlaylist();
+  const toggleFavorite = useToggleFavorite();
+  const updateFavoriteTrackName = useUpdateFavoriteTrackName();
+  const updatePlaylistTrackName = useUpdatePlaylistTrackName();
 
   const rows = React.useMemo(() => {
     if (isSavedTracks) {
@@ -251,9 +257,33 @@ export default function CollectionDetailPage() {
                     index={idx}
                     playlist={tracks}
                     onRemove={() => {
-                      if (isSavedTracks) return;
+                      if (isSavedTracks) {
+                        toggleFavorite.mutate({
+                          track: musicCardToTrackSnapshot(track),
+                          isFavorited: true,
+                        });
+                        return;
+                      }
                       removeTrack.mutate({ playlistId: id, trackId: track.id });
                     }}
+                    onRename={(friendlyName) => {
+                      if (isSavedTracks) {
+                        updateFavoriteTrackName.mutate({
+                          trackId: track.id,
+                          friendlyName,
+                        });
+                        return;
+                      }
+                      updatePlaylistTrackName.mutate({
+                        playlistId: id,
+                        trackId: track.id,
+                        friendlyName,
+                      });
+                    }}
+                    isRenaming={
+                      updateFavoriteTrackName.isPending ||
+                      updatePlaylistTrackName.isPending
+                    }
                   />
                 ))}
               </div>

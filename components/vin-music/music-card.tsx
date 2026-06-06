@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/tooltip";
 import { TrackCover } from "@/components/vin-music/track-cover";
 import { formatCount, formatDuration } from "@/lib/vin-music/format";
+import { getTrackDisplayTitle } from "@/lib/vin-music/display";
 import type { MusicCardModel } from "@/lib/vin-music/types";
 import { useCollectionsStore } from "@/store/collections-store";
 import { useVinMusicPlayerStore } from "@/store/vin-music-player-store";
@@ -88,6 +89,7 @@ export function MusicCard({
     (f) => f.track_id === music.id,
   );
   const isCurrent = currentTrack?.id === music.id;
+  const displayTitle = getTrackDisplayTitle(music);
   const openDetails = () => onOpenDetails?.(music);
 
   const handlePlayClick = (e: React.MouseEvent) => {
@@ -128,7 +130,7 @@ export function MusicCard({
           <div className="relative">
             <TrackCover
               src={music.cover}
-              alt={music.title}
+              alt={displayTitle}
               sizeClassName="h-16 w-16"
             />
             <button
@@ -156,7 +158,7 @@ export function MusicCard({
                 className="hover:underline inline-block max-w-full cursor-pointer text-left"
               >
                 <div className="truncate text-sm font-semibold text-foreground leading-tight font-heading">
-                  {music.title}
+                  {displayTitle}
                 </div>
               </button>
             ) : (
@@ -165,7 +167,7 @@ export function MusicCard({
                 className="hover:underline inline-block max-w-full"
               >
                 <div className="truncate text-sm font-semibold text-foreground leading-tight font-heading">
-                  {music.title}
+                  {displayTitle}
                 </div>
               </Link>
             )}
@@ -208,7 +210,7 @@ export function MusicCard({
             <div className="relative">
               <TrackCover
                 src={music.cover}
-                alt={music.title}
+                alt={displayTitle}
                 sizeClassName="h-14 w-14"
               />
               <button
@@ -235,7 +237,7 @@ export function MusicCard({
                   className="hover:underline hover:text-primary transition-colors inline-block max-w-full cursor-pointer text-left"
                 >
                   <div className="truncate text-sm font-semibold text-foreground leading-snug font-heading">
-                    {music.title}
+                    {displayTitle}
                   </div>
                 </button>
               ) : (
@@ -244,7 +246,7 @@ export function MusicCard({
                   className="hover:underline hover:text-primary transition-colors inline-block max-w-full"
                 >
                   <div className="truncate text-sm font-semibold text-foreground leading-snug font-heading">
-                    {music.title}
+                    {displayTitle}
                   </div>
                 </Link>
               )}

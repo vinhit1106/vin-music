@@ -32,3 +32,8 @@ export const playlistTrackParamsSchema = z
   })
   .strict();
 
+export const playlistTrackUpdateBodySchema = z
+  .object({
+    friendlyName: z.string().trim().max(160).nullable(),
+  })
+  .strict();

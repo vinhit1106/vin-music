@@ -18,6 +18,7 @@ export type MusicStats = {
 export type MusicCardModel = {
   id: string;
   title: string;
+  friendlyName?: string | null;
   author: string;
   duration: number;
   album: string;

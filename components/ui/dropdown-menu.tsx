@@ -94,7 +94,7 @@ function DropdownMenuContent({
     <div
       data-slot="dropdown-menu-content"
       className={cn(
-        "absolute top-full z-50 mt-2 min-w-44 rounded-xl border border-border bg-popover p-1 text-popover-foreground shadow-lg",
+        "absolute top-full z-[70] mt-2 min-w-44 rounded-xl border border-border bg-popover p-1 text-popover-foreground shadow-lg",
         align === "end" ? "right-0" : "left-0",
         className,
       )}

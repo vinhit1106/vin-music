@@ -14,8 +14,8 @@ export function SectionHeading({
   action?: React.ReactNode;
 }) {
   return (
-    <div className={cn("flex items-start justify-between gap-3", className)}>
-      <div className="space-y-1">
+    <div className={cn("flex min-w-0 flex-wrap items-start justify-between gap-3", className)}>
+      <div className="min-w-0 space-y-1">
         <h2 className="font-(--font-heading) text-xl font-semibold tracking-tight">
           {title}
         </h2>

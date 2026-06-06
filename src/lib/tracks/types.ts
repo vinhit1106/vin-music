@@ -1,6 +1,7 @@
 export interface BaseTrack {
   id: string;
   title: string;
+  friendlyName?: string | null;
   artist: string;
   audioUrl: string;
   duration: number;
@@ -39,4 +40,3 @@ export type TrackSnapshot = BaseTrack &
   };
 
 export type Track = TrackSnapshot;
-

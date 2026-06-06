@@ -58,7 +58,7 @@ function TopBarInner({
 
   return (
     <header className="sticky top-0 z-35 flex h-12 items-center border-b border-border bg-card/85 px-3 backdrop-blur-sm md:px-5">
-      <div className="flex w-full items-center justify-between gap-4">
+      <div className="flex min-w-0 w-full items-center justify-between gap-2 sm:gap-4">
 
         {/* Left: Mobile hamburger — only visible below xl where desktop sidebar is hidden */}
         <div className="flex items-center gap-2 xl:hidden">
@@ -73,7 +73,7 @@ function TopBarInner({
         </div>
 
         {/* Center: Global Search Input */}
-        <form onSubmit={handleSearchSubmit} className="flex-1 max-w-[480px] mx-auto">
+        <form onSubmit={handleSearchSubmit} className="mx-auto min-w-0 flex-1 max-w-[480px]">
           <div className="relative">
             <Search className="absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground/60 pointer-events-none" />
             <input
@@ -84,7 +84,7 @@ function TopBarInner({
               onChange={(e) => setLocalQuery(e.target.value)}
               className="w-full h-8 rounded-lg border border-input bg-muted/30 pl-9 pr-14 text-[12px] text-foreground placeholder-muted-foreground focus:outline-none focus:border-ring focus:bg-background transition-all font-heading"
             />
-            <div className="absolute top-1/2 right-2 -translate-y-1/2 pointer-events-none select-none flex items-center gap-0.5 rounded border border-border/70 bg-muted px-1.5 py-0.5 text-[8.5px] font-bold text-muted-foreground">
+            <div className="pointer-events-none absolute top-1/2 right-2 hidden -translate-y-1/2 select-none items-center gap-0.5 rounded border border-border/70 bg-muted px-1.5 py-0.5 text-[8.5px] font-bold text-muted-foreground sm:flex">
               <span>⌘</span><span>K</span>
             </div>
           </div>

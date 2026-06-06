@@ -20,6 +20,7 @@ export const zTrackSnapshot = z
   .object({
     id: z.string().min(1),
     title: z.string().min(1),
+    friendlyName: z.string().trim().max(160).nullable().optional(),
     artist: z.string().min(1),
     audioUrl: z.string().url(),
     coverUrl: z.string().url().optional(),
@@ -28,4 +29,3 @@ export const zTrackSnapshot = z
     stats: zTrackStats.optional(),
   })
   .strict();
-

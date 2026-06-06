@@ -3,12 +3,14 @@
 import { Play } from "lucide-react";
 
 import { CoverImage } from "@/components/vin-music/track-cover";
+import { getTrackDisplayTitle } from "@/lib/vin-music/display";
 import { formatCount } from "@/lib/vin-music/format";
 import { useVinMusicPlayerStore } from "@/store/vin-music-player-store";
 
 export function NowPlayingCard() {
   const currentTrack = useVinMusicPlayerStore((state) => state.currentTrack);
   const isPlaying = useVinMusicPlayerStore((state) => state.isPlaying);
+  const displayTitle = currentTrack ? getTrackDisplayTitle(currentTrack) : "";
   return (
     <section className="h-fit rounded-lg border border-border/70 bg-card/85 p-4">
       <div className="flex items-center justify-between gap-3">
@@ -17,7 +19,7 @@ export function NowPlayingCard() {
             Now Playing
           </div>
           <div className="mt-1 text-sm font-medium text-foreground">
-            {currentTrack ? currentTrack.title : "Nothing playing"}
+            {currentTrack ? displayTitle : "Nothing playing"}
           </div>
           <div className="text-xs text-muted-foreground">
             {currentTrack ? currentTrack.author : "Pick a track to resume"}
@@ -35,7 +37,7 @@ export function NowPlayingCard() {
               {currentTrack.cover?.trim() ? (
                 <CoverImage
                   src={currentTrack.cover}
-                  alt={currentTrack.title}
+                  alt={displayTitle}
                   containerClassName="h-full w-full rounded-full"
                   className="rounded-full"
                   sizes="64px"
@@ -55,7 +57,7 @@ export function NowPlayingCard() {
             </div>
             <div className="min-w-0 flex-1 space-y-1">
               <div className="truncate text-sm font-medium text-foreground">
-                {currentTrack.title}
+                {displayTitle}
               </div>
               <div className="truncate text-xs text-muted-foreground">
                 {currentTrack.author}

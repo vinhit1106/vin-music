@@ -8,6 +8,7 @@ import {
 } from "@/components/home/player-dock";
 import { useCollectionsStore } from "@/store/collections-store";
 import { useVinMusicPlayerStore } from "@/store/vin-music-player-store";
+import { getTrackDisplayTitle } from "@/lib/vin-music/display";
 import { musicCardToTrackSnapshot, trackToMusicCard } from "@/src/lib/query/mappers";
 import { useAuthContext } from "@/src/lib/auth/hooks";
 import { useAddHistory } from "@/src/lib/query/hooks";
@@ -17,7 +18,7 @@ function trackFromStore(
 ): PlayerDockTrack {
   return {
     id: track.id,
-    title: track.title,
+    title: getTrackDisplayTitle(track),
     artist: track.author,
     coverUrl: track.cover,
     duration: track.duration,

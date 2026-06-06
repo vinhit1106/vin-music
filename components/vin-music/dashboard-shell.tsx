@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { AppSidebar } from "@/components/vin-music/app-sidebar";
 import { CollectionPickerModal } from "@/components/vin-music/collection-picker-modal";
@@ -8,16 +8,45 @@ import { CreateCollectionModal } from "@/components/vin-music/create-collection-
 import { GlobalPlayerDock } from "@/components/vin-music/global-player-dock";
 import { MobileNavDrawer } from "@/components/vin-music/mobile-nav-drawer";
 import { TopBar } from "@/components/vin-music/top-bar";
+import { getTrackDisplayTitle } from "@/lib/vin-music/display";
 import { useVinMusicPlayerStore } from "@/store/vin-music-player-store";
 import { cn } from "@/lib/utils";
+import { useAuthContext } from "@/src/lib/auth/hooks";
+import { useFavorites } from "@/src/lib/query/hooks";
+import { trackToMusicCard } from "@/src/lib/query/mappers";
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const dockMode = useVinMusicPlayerStore((s) => s.dockMode);
-  const hasTrack = useVinMusicPlayerStore((s) => s.currentTrack != null);
+  const currentTrack = useVinMusicPlayerStore((s) => s.currentTrack);
+  const hasTrack = currentTrack != null;
   const queue = useVinMusicPlayerStore((s) => s.queue);
+  const { user } = useAuthContext();
+  const favoritesQuery = useFavorites({ enabled: Boolean(user) });
+
+  const savedCurrentTrack = useMemo(() => {
+    if (!currentTrack) return null;
+    const favorite = (favoritesQuery.data ?? []).find(
+      (item) => item.track_id === currentTrack.id,
+    );
+    return favorite ? trackToMusicCard(favorite.track_data) : null;
+  }, [currentTrack, favoritesQuery.data]);
+
+  useEffect(() => {
+    const defaultTitle = "VinVibe - Sound archive";
+    if (!currentTrack) {
+      document.title = defaultTitle;
+      return;
+    }
+
+    document.title = `${getTrackDisplayTitle(savedCurrentTrack ?? currentTrack)} | VinVibe`;
+
+    return () => {
+      document.title = defaultTitle;
+    };
+  }, [currentTrack, savedCurrentTrack]);
 
   // Bottom padding must clear the player dock.
   // Expanded dock with non-empty queue can reach ~220px on small screens.
@@ -31,8 +60,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         : "pb-[4.75rem] md:pb-[4.5rem]";
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="flex min-h-screen">
+    <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
+      <div className="flex min-h-screen min-w-0">
         {/* Desktop sidebar — only xl+ */}
         <AppSidebar
           collapsed={sidebarCollapsed}
@@ -47,8 +76,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             )}
           >
             <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
-            <main className="flex-1 px-3 py-4 md:px-5 md:py-5">
-              <div className="mx-auto w-full max-w-[1280px]">{children}</div>
+            <main className="min-w-0 flex-1 overflow-x-clip px-3 py-4 md:px-5 md:py-5">
+              <div className="mx-auto w-full max-w-[1280px] min-w-0">{children}</div>
             </main>
           </div>
         </Suspense>
